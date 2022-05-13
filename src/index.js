@@ -1,4 +1,6 @@
 import * as PIXI from 'pixi.js';
+import {createDucttape} from './ducttape';
+import {createPlayer} from './player';
 
 // The application will create a renderer using WebGL, if possible,
 // with a fallback to a canvas render. It will also setup the ticker
@@ -9,25 +11,16 @@ const app = new PIXI.Application();
 // can then insert into the DOM
 document.body.appendChild(app.view);
 
-// load the texture we need
-app.loader.add('bunny', 'assets/bunny.png').load((loader, resources) => {
-    // This creates a texture from a 'bunny.png' image
-    const bunny = new PIXI.Sprite(resources.bunny.texture);
+//=======Object initialization=====
+const ducttape = createDucttape(app);
+var player1 = createPlayer(app, 1);
+var player2 = createPlayer(app, 2);
+player1.x = app.screen.left;
+player2.x = app.screen.right;
 
-    // Setup the position of the bunny
-    bunny.x = app.renderer.width / 2;
-    bunny.y = app.renderer.height / 2;
-
-    // Rotate around the center
-    bunny.anchor.x = 0.5;
-    bunny.anchor.y = 0.5;
-
-    // Add the bunny to the scene we are building
-    app.stage.addChild(bunny);
-
-    // Listen for frame updates
-    app.ticker.add(() => {
-         // each frame we spin the bunny around a bit
-        bunny.rotation += 0.01;
-    });
-});
+app.stage.addChild(ducttape);
+app.stage.addChild(player1);
+app.stage.addChild(player2);
+app.ticker.add((delta) => {
+    ducttape.rotation += 0.1 * delta;
+})
